@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Military Graduation Portal</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #001f3f, #004080);
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 600px;
+    margin: 60px auto;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  }
+  input, select, button, textarea {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+  }
+  button {
+    background-color: #1e90ff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover { background-color: #187bcd; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: LOGIN OR ACCOUNT CREATION -->
+<div id="page1" class="container">
+  <h1>Military Graduation Portal</h1>
+  <p>Login or Create an Account</p>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <p>Select your role:</p>
+  <select id="role">
+    <option value="">-- Choose Role --</option>
+    <option value="Drill Sergeant">Drill Sergeant</option>
+    <option value="Family Member">Family Member</option>
+  </select><br>
+  <button onclick="goToNext()">Continue</button>
+</div>
+
+<!-- PAGE 2: DRILL SERGEANT INFO -->
+<div id="page2-drill" class="container hidden">
+  <h2>Drill Sergeant Verification</h2>
+  <input type="text" id="drillName" placeholder="Enter Your Name">
+  <input type="password" id="drillID" placeholder="Enter ID Code (1092)">
+  <input type="text" id="divisionName" placeholder="Enter Division Name">
+  <button onclick="verifyDrill()">Continue</button>
+  <button onclick="goBackToLogin()">← Back</button>
+</div>
+
+<!-- PAGE 3: DRILL SERGEANT DIVISION MANAGEMENT -->
+<div id="page3-drill" class="container hidden">
+  <h2>Division Management</h2>
+  <p>Add the names of your recruits below:</p>
+  <textarea id="recruitList" placeholder="One name per line..."></textarea>
+  <button onclick="showGraduationCount()">Show Graduation Count</button>
+  <p id="gradCount"></p>
+  <button onclick="restart()">🏠 Home</button>
+</div>
+
+<!-- PAGE 2: FAMILY MEMBER ACCOUNT CREATION -->
+<div id="page2-family" class="container hidden">
+  <h2>Complete Your Account</h2>
+  <input type="email" id="familyEmail" placeholder="Enter Your Email">
+  <input type="text" id="familyName" placeholder="Full Name">
+  <button onclick="goToBranchPage()">Next</button>
+  <button onclick="goBackToLogin()">← Back</button>
+</div>
+
+<!-- PAGE 3: CHOOSE BRANCH -->
+<div id="page3-family" class="container hidden">
+  <h2>Recruit’s Branch</h2>
+  <select id="branch">
+    <option value="">-- Select Branch --</option>
+    <option>Army</option>
+    <option>Marines</option>
+    <option>Navy</option>
+    <option>Air Force</option>
+    <option>Space Force</option>
+    <option>Coast Guard</option>
+  </select>
+  <button onclick="goToPayment()">Next</button>
+  <button onclick="goBackToFamily()">← Back</button>
+</div>
+
+<!-- PAGE 4: PAYMENT (FAKE) -->
+<div id="page4-family" class="container hidden">
+  <h2>Choose Payment Method</h2>
+  <select id="payment">
+    <option value="">-- Select Payment Type --</option>
+    <option>RP Credits</option>
+    <option>RP Coins</option>
+    <option>Roleplay Card</option>
+  </select>
+  <input type="text" id="cardNumber" placeholder="Enter Card Number (Fake)">
+  <input type="text" id="cardName" placeholder="Name on Card">
+  <button onclick="goToConfirmation()">Pay</button>
+  <button onclick="goBackToBranch()">← Back</button>
+</div>
+
+<!-- PAGE 5: CONFIRMATION -->
+<div id="page5-family" class="container hidden">
+  <h2>🎟️ Ticket Sent!</h2>
+  <p>Your ticket has been sent to your email.</p>
+  <p>Thank you for purchasing! Enjoy graduation day.</p>
+  <button onclick="restart()">🏠 Return Home</button>
+</div>
+
+<script>
+let role = "";
+
+function goToNext() {
+  role = document.getElementById("role").value;
+  if (!document.getElementById("username").value || !document.getElementById("password").value || !role) {
+    alert("Please fill out all fields and select your role!");
+    return;
+  }
+  document.getElementById("page1").classList.add("hidden");
+  if (role === "Drill Sergeant") {
+    document.getElementById("page2-drill").classList.remove("hidden");
+  } else {
+    document.getElementById("page2-family").classList.remove("hidden");
+  }
+}
+
+function goBackToLogin() {
+  document.querySelectorAll(".container").forEach(div => div.classList.add("hidden"));
+  document.getElementById("page1").classList.remove("hidden");
+}
+
+function verifyDrill() {
+  const id = document.getElementById("drillID").value.trim();
+  if (id !== "1092") {
+    alert("Invalid ID Code! Please try again.");
+    return;
+  }
+  document.getElementById("page2-drill").classList.add("hidden");
+  document.getElementById("page3-drill").classList.remove("hidden");
+}
+
+function showGraduationCount() {
+  const recruits = document.getElementById("recruitList").value.trim().split("\n").filter(n => n);
+  document.getElementById("gradCount").innerHTML = `🎓 Total Recruits Attending: <strong>${recruits.length}</strong>`;
+}
+
+function goToBranchPage() {
+  if (!document.getElementById("familyEmail").value || !document.getElementById("familyName").value) {
+    alert("Please fill out all fields!");
+    return;
+  }
+  document.getElementById("page2-family").classList.add("hidden");
+  document.getElementById("page3-family").classList.remove("hidden");
+}
+
+function goBackToFamily() {
+  document.getElementById("page3-family").classList.add("hidden");
+  document.getElementById("page2-family").classList.remove("hidden");
+}
+
+function goToPayment() {
+  const branch = document.getElementById("branch").value;
+  if (!branch) {
+    alert("Please select a branch!");
+    return;
+  }
+  document.getElementById("page3-family").classList.add("hidden");
+  document.getElementById("page4-family").classList.remove("hidden");
+}
+
+function goBackToBranch() {
+  document.getElementById("page4-family").classList.add("hidden");
+  document.getElementById("page3-family").classList.remove("hidden");
+}
+
+function goToConfirmation() {
+  const pay = document.getElementById("payment").value;
+  const card = document.getElementById("cardNumber").value;
+  const name = document.getElementById("cardName").value;
+  if (!pay || !card || !name) {
+    alert("Please fill out all payment fields!");
+    return;
+  }
+  document.getElementById("page4-family").classList.add("hidden");
+  document.getElementById("page5-family").classList.remove("hidden");
+}
+
+function restart() {
+  document.querySelectorAll(".container").forEach(div => div.classList.add("hidden"));
+  document.getElementById("page1").classList.remove("hidden");
+  document.querySelectorAll("input, textarea, select").forEach(el => el.value = "");
+}
+</script>
+
+</body>
+</html>
